@@ -13,8 +13,9 @@ const int PIN_BLINK = 13;    // Pin 13 is the on-board LED
 const int PIN_FADE = 5;
 
 //led counter
-int LIGHT_TRACKER = 0;
-int LIGHT = 0;
+
+int LIGHT = -1;
+int COUNTER = 0;
 
 //initialize the sensor
 PulseSensorPlayground pulseSensor;
@@ -87,37 +88,40 @@ void loop() {
    */
   if (pulseSensor.sawStartOfBeat()) {
    pulseSensor.outputBeat();
-     //neopixel section
-    LIGHT_TRACKER = 1; 
+     //neopixel section     
     flash();
   }
-  else {
-    LIGHT_TRACKER = 0;
+
+
+  /*Counts every time there is a loop. This is reset 
+   * whenever the pulse is detected
+   * if there is long enough between deteted pulses (30)
+   * everything resets to zero
+  */
+  COUNTER = COUNTER + 1;
+  if (COUNTER > 30) {
+    LIGHT = -1;
   }
-  
 }
 
 
 void flash() {
-
-  if (LIGHT_TRACKER == 1){
+  //resets the counter
+  COUNTER = 0;
+    //adds one to the light
     LIGHT = (LIGHT + 1);
+    //for each light that should be on, start high
+    //and fade to low
     for (int x=255; x > 0; x--) {
       for (int y = 0; y < (LIGHT + 1); y++){
        
           strip.setPixelColor(y, x);
           strip.show();   
       }
-    }
+    
      
   }
 
-  /*if (LIGHT_TRACKER == 0) {
-    LIGHT = 0;
-    for (int x=255; x > 0; x--) {
-      strip.setPixelColor(LIGHT, x);
-      strip.show();    
-  }
-  }*/
+
 }
 
