@@ -12,6 +12,10 @@ const int THRESHOLD = 650;   // Adjust this number to avoid noise when idle
 const int PIN_BLINK = 13;    // Pin 13 is the on-board LED
 const int PIN_FADE = 5;
 
+//led counter
+int LIGHT_TRACKER = 0;
+int LIGHT = 0;
+
 //initialize the sensor
 PulseSensorPlayground pulseSensor;
 
@@ -63,6 +67,9 @@ void setup() {
 
 void loop() {
 
+  //reset lights to off
+  strip.show();
+
   //sensor section
    /*
      Wait a bit.
@@ -81,7 +88,11 @@ void loop() {
   if (pulseSensor.sawStartOfBeat()) {
    pulseSensor.outputBeat();
      //neopixel section
+    LIGHT_TRACKER = 1; 
     flash();
+  }
+  else {
+    LIGHT_TRACKER = 0;
   }
   
 }
@@ -89,10 +100,24 @@ void loop() {
 
 void flash() {
 
- for (int x=255; x > 0; x--) {
-    strip.setPixelColor(2, x);
-    strip.show();
-    
- }
+  if (LIGHT_TRACKER == 1){
+    LIGHT = (LIGHT + 1);
+    for (int x=255; x > 0; x--) {
+      for (int y = 0; y < (LIGHT + 1); y++){
+       
+          strip.setPixelColor(y, x);
+          strip.show();   
+      }
+    }
+     
+  }
+
+  /*if (LIGHT_TRACKER == 0) {
+    LIGHT = 0;
+    for (int x=255; x > 0; x--) {
+      strip.setPixelColor(LIGHT, x);
+      strip.show();    
+  }
+  }*/
 }
 
