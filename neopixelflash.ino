@@ -80,13 +80,19 @@ void loop() {
    */
   if (pulseSensor.sawStartOfBeat()) {
    pulseSensor.outputBeat();
+     //neopixel section
+    flash();
   }
-
-  //neopixel section
-  strip.setPixelColor(2, 255);
-  strip.setPixelColor(4, 150, 200, 3);
-  strip.show();
-  
-
   
 }
+
+
+void flash() {
+
+ for (int x=255; x > 0; x--) {
+    strip.setPixelColor(2, x);
+    strip.show();
+    
+ }
+}
+
