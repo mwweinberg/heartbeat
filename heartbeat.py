@@ -1,29 +1,30 @@
 import board
-import digitalio
 import time
 import analogio
-import pulseio
+import neopixel
  
-#led = digitalio.DigitalInOut(board.D13)
-#led.direction = digitalio.Direction.OUTPUT
-led = pulseio.PWMOut(board.D13, frequency=5000, duty_cycle=0)
+pixels = neopixel.NeoPixel(board.A2, 8, brightness=.2)
+pixels.fill((0,0,0))
+pixels.show()
+#pixels[0] = (50, 100, 200)
+#pixels.show()
 
 
 adc = analogio.AnalogIn(board.A1)
 
-#https://learn.adafruit.com/circuitpython-essentials/circuitpython-pwm
 def flash():
-    #on
-    led.duty_cycle = 65535 
-    #fade out
+    for i in range(100, 255, 20):
+        pixels[0] = (i, 0, 0)
+        pixels.show()
+    for i in range(255, 0, -10):
+        pixels[0] = (i, 0, 0)
+        pixels.show()
  
 while True:
-    #print("Hello, CircuitPython!")
+    #formatted for the plotter, you can just do print(adc.value) for the number
     print((adc.value,))
-    for i in range(100):
-        # PWM LED up and down
-        if i < 50:
-            led.duty_cycle = int(i * 2 * 65535 / 100)  # Up
-        else:
-            led.duty_cycle = 65535 - int((i - 50) * 2 * 65535 / 100)  # Down
-        time.sleep(0.01)
+    if adc.value > 50000:
+        flash()
+    # flash()
+    time.sleep(.1)
+    
