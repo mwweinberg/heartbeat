@@ -48,5 +48,5 @@ def heartbeat(light):
             counter = 0
         else:
             #TODO:return an error
-
-heartbeat(0)
+while True:
+    heartbeat(0)
