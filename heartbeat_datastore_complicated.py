@@ -27,21 +27,26 @@ def get_new_average():
     new_average = int(input("new average? "))
 
 def lighter_up(light_number, intensity):
+    print("lighter_up intensity = " + str(intensity))
     #this line needs to be modified to whatever the intensity should be
     strip.setPixelColorRGB(light_number, intensity, 0, 0)
     strip.show()
     return intensity + 1
 
 def lighter_down(light_number, intensity):
+    print("lighter_down value = " + str(255 - (intensity - 255)))
     #this line needs to be modified to whatever the intensity should be
-    strip.setPixelColorRGB(light_number, 255-intensity, 0, 0)
+    strip.setPixelColorRGB(light_number, 255 - (intensity - 255), 0, 0)
     strip.show()
     return intensity + 1
+
+
 
 
 def heartbeat(light):
     #acknowledge that counter is a global variable
     global counter
+    global start_time
 
     if counter == 0:
         get_new_average()
@@ -52,11 +57,15 @@ def heartbeat(light):
     #need to change it when you figure out the flash
     elif 0 < counter < 255:
         counter = lighter_up(light, counter)
-    elif 255 < counter <510:
+    elif 254 < counter <510:
         counter = lighter_down(light, counter)
-    elif counter > 510:
+    elif counter > 509:
+        #turn off the light
+        strip.setPixelColorRGB(light, 0, 0, 0)
+        strip.show()
         #difference between the start time and now
         time_from_start = int(time.perf_counter()) - start_time
+        print(time_from_start)
         #if the time from the start of the flash is less than the
         #duration of the heartbeat, as defiend by new_average
         if time_from_start < new_average:
@@ -67,6 +76,8 @@ def heartbeat(light):
         elif time_from_start >= new_average:
             counter = 0
         else:
-            print("There was an error in heartbeat()")
+            print("There was an error in traffic_cop()")
+    else:
+        print("error: counter = " + str(counter))
 while True:
     heartbeat(0)
